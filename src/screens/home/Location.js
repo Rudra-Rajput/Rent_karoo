@@ -18,7 +18,10 @@ const Location = ({navigation}) => {
         { label: 'Madhya Pradesh', value: 'Madhya Pradesh' },
         { label: 'Utter Pradesh', value: 'Utter Pradesh' },
         { label: 'Himanchal Pradesh', value: 'Himanchal Pradesh' },
-        { label: 'Gujrat', value: 'Himanchal Pradesh' },
+        { label: 'Gujrat', value: 'Gujrat' },
+        { label: 'Maharastra', value: 'Maharastra' },
+        { label: 'Rajsthan', value: 'Rajsthan' },
+        { label: 'Andhra Pradesh', value: 'Andhra Pradesh' },
       ];
 
     const cityData = [
@@ -27,6 +30,7 @@ const Location = ({navigation}) => {
         { label: 'Hoshangabad', value: 'Hoshangabad' },
         { label: 'Balaghat', value: 'Balaghat' },
         { label: 'Betul', value: 'Betul' },
+        { label: 'Panna', value: 'Panna' },
       ];
  
   return (

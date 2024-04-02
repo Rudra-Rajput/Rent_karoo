@@ -18,10 +18,10 @@ const Profile = ({navigation}) => {
          <TouchableOpacity onPress={()=>navigation.navigate('ProfileView')} activeOpacity={0.8} style={styles.section}>
            <Text style={styles.sectionText}>View and Edit Profile</Text>
          </TouchableOpacity>
-         <TouchableOpacity activeOpacity={0.8} style={[styles.section, {marginTop: '3%'}]}>
+         <TouchableOpacity onPress={() => navigation.navigate('Setting')} activeOpacity={0.8} style={[styles.section, {marginTop: '3%'}]}>
            <Text style={styles.sectionText}>Settings</Text>
          </TouchableOpacity>
-         <TouchableOpacity activeOpacity={0.8} style={[styles.section, {marginTop: '3%'}]}>
+         <TouchableOpacity onPress={() => navigation.navigate('HelpSupport')} activeOpacity={0.8} style={[styles.section, {marginTop: '3%'}]}>
            <Text style={styles.sectionText}>Help & Support</Text>
          </TouchableOpacity>
          <TouchableOpacity activeOpacity={0.8} style={[styles.section, {marginTop: '3%'}]}>
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     alignSelf: 'center',
     borderRadius: 5,
-    elevation: .5
+    elevation: 1
   },
   sectionText: {
     marginLeft: '5%',

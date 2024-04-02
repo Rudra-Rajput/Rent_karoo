@@ -20,6 +20,8 @@ import Otp from '../screens/auth/Otp';
 import Services from '../screens/Services/Services';
 import Shop from '../screens/Services/Shop';
 import Location from '../screens/home/Location';
+import Setting from '../screens/profile/Setting';
+import HelpSupport from '../screens/profile/Help&Support';
 
 const Stack = createStackNavigator();
 
@@ -46,8 +48,10 @@ const MyStack = () => {
       <Stack.Screen name="Services" component={Services} options={{...TransitionPresets.ModalSlideFromBottomIOS}}/>
       <Stack.Screen name="Shop" component={Shop} options={{...TransitionPresets.ModalSlideFromBottomIOS}}/>
       <Stack.Screen name="Location" component={Location} options={{...TransitionPresets.ModalSlideFromBottomIOS}}/>
+      <Stack.Screen name="Setting" component={Setting} options={{...TransitionPresets.ModalSlideFromBottomIOS}}/>
+      <Stack.Screen name="HelpSupport" component={HelpSupport} options={{...TransitionPresets.ModalSlideFromBottomIOS}}/>
     </Stack.Navigator>
   )
 }
 
-export default MyStack
+export default MyStack;

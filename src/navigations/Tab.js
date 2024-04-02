@@ -21,7 +21,7 @@ const MyTab = () => {
                 iconName = 'home'; 
               } else if (route.name === 'Profile') {
                 iconName = 'person-circle-sharp';
-              } else if (route.name === 'My Ads') {
+              } else if (route.name === 'Favourite') {
                 iconName = 'heart-sharp';
               } else if (route.name === 'Sell') {
                 iconName = 'bag-handle';
@@ -40,7 +40,7 @@ const MyTab = () => {
           <Tab.Screen name="Home" component={Home} />
           <Tab.Screen name="Sell" component={Sell} />
           <Tab.Screen name="Services" component={Services} />
-          <Tab.Screen name="My Ads" component={Fav} />
+          <Tab.Screen name="Favourite" component={Fav} />
           <Tab.Screen name="Profile" component={Profile} />
         </Tab.Navigator>
       );
