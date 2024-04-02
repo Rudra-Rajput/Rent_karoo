@@ -18,6 +18,7 @@ const Location = ({navigation}) => {
         { label: 'Madhya Pradesh', value: 'Madhya Pradesh' },
         { label: 'Utter Pradesh', value: 'Utter Pradesh' },
         { label: 'Himanchal Pradesh', value: 'Himanchal Pradesh' },
+        { label: 'Gujrat', value: 'Himanchal Pradesh' },
       ];
 
     const cityData = [
