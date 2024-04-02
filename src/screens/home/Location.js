@@ -1,14 +1,32 @@
 import { StyleSheet, Text, View, StatusBar, TouchableOpacity, ScrollView } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import Header from '../../components/Header'
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6'
-import { useState } from 'react'
+import { Dropdown } from 'react-native-element-dropdown';
 import { TextInput } from 'react-native-paper'
 import Button from '../../components/Button'
 
 const Location = ({navigation}) => {
 
    const [hide, setHide] = useState(false);
+   const [isFocus, setIsFocus] = React.useState(false);
+   const [isFocus1, setIsFocus1] = React.useState(false);
+   const [state, setState] = React.useState('');
+   const [city, setCity] = React.useState('');
+
+    const stateData = [
+        { label: 'Madhya Pradesh', value: 'Madhya Pradesh' },
+        { label: 'Utter Pradesh', value: 'Utter Pradesh' },
+        { label: 'Himanchal Pradesh', value: 'Himanchal Pradesh' },
+      ];
+
+    const cityData = [
+        { label: 'Bhopal', value: 'Bhopal' },
+        { label: 'Damoh', value: 'Damoh' },
+        { label: 'Hoshangabad', value: 'Hoshangabad' },
+        { label: 'Balaghat', value: 'Balaghat' },
+        { label: 'Betul', value: 'Betul' },
+      ];
  
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={styles.mainContainer}>
@@ -33,9 +51,47 @@ const Location = ({navigation}) => {
           <View style={[styles.inputContainer, {marginTop: '5%'}]}>
             <TextInput mode='flat' label={'Landmark *'} style={styles.input}/>
           </View>
-          <View style={[styles.inputContainer, {marginTop: '5%'}]}>
-            <TextInput mode='flat' label={'City *'} style={styles.input}/>
-          </View>
+          
+          <Dropdown
+              style={[styles.dropdown, isFocus && {borderColor: 'blue'}]}
+              placeholderStyle={styles.placeholderStyle}
+              data={stateData}
+              maxHeight={300}
+              labelField="label"
+              valueField="value"
+              itemTextStyle={styles.itemTextStyle}
+              selectedTextStyle={styles.itemTextStyle}
+              placeholderTextStyle={styles.placeholderStyle}
+              placeholder={!isFocus ? 'Select City' : '...'}
+              value={state}
+              onFocus={() => setIsFocus(true)}
+              onBlur={() => setIsFocus(false)}
+              onChange={async (item) => {
+                setState(item.value);
+                setIsFocus(false);
+              }}
+            />
+
+          <Dropdown
+              style={[styles.dropdown, isFocus1 && {borderColor: 'blue'}]}
+              placeholderStyle={styles.placeholderStyle}
+              data={cityData}
+              maxHeight={300}
+              labelField="label"
+              valueField="value"
+              itemTextStyle={styles.itemTextStyle}
+              selectedTextStyle={styles.itemTextStyle}
+              placeholderTextStyle={styles.placeholderStyle}
+              placeholder={!isFocus1 ? 'Select State' : '...'}
+              value={city}
+              onFocus={() => setIsFocus1(true)}
+              onBlur={() => setIsFocus1(false)}
+              onChange={async (item) => {
+                setCity(item.value);
+                setIsFocus1(false);
+              }}
+            />
+
           <View style={[styles.inputContainer, {marginTop: '5%'}]}>
             <TextInput mode='flat' maxLength={6} keyboardType='number-pad' label={'Pin code *'} style={styles.input}/>
           </View>
@@ -85,5 +141,27 @@ const styles = StyleSheet.create({
     input: {
         backgroundColor: '#FFFFFF',
         color: '#000000'
+    },
+    itemTextStyle: {
+      color: '#000000'
+  },
+  placeholderStyle: {
+      color: '#000000',
+      fontSize: 15
+  },
+  dropdown: {
+      margin: 15,
+      height: 50,
+      paddingLeft: '7%',
+      borderBottomColor: '#b0b0b0',
+      borderBottomWidth: 1,
+      backgroundColor: '#ffffff',
+      borderRadius: 10,
+      width: '90%',
+      alignSelf: 'center',
+      paddingVertical: 30,
+      paddingHorizontal: 10,
+      color: '#000000',
+      opacity: 0.8
     },
 })
