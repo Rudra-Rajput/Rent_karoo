@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, TextInput, View, StatusBar, Alert, ActivityIndicator } from 'react-native'
+import { Image, StyleSheet, Text, TextInput, View, StatusBar, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import Header from '../../components/Header'
 import Button from '../../components/Button'
