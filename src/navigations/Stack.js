@@ -22,6 +22,13 @@ import Shop from '../screens/Services/Shop';
 import Location from '../screens/home/Location';
 import Setting from '../screens/profile/Setting';
 import HelpSupport from '../screens/profile/Help&Support';
+import AllShop from '../screens/SpecialServices.js/AllShop';
+import ShopProduct from '../screens/SpecialServices.js/ShopProduct';
+import Chat from '../screens/chat/Chat';
+import ChatBox from '../screens/chat/ChatBox';
+import AddServices from '../screens/Services/AddServices';
+import CreateShop from '../screens/SpecialServices.js/CreateShop';
+import AddProduct from '../screens/SpecialServices.js/AddProduct';
 
 const Stack = createStackNavigator();
 
@@ -50,6 +57,13 @@ const MyStack = () => {
       <Stack.Screen name="Location" component={Location} options={{...TransitionPresets.ModalSlideFromBottomIOS}}/>
       <Stack.Screen name="Setting" component={Setting} options={{...TransitionPresets.ModalSlideFromBottomIOS}}/>
       <Stack.Screen name="HelpSupport" component={HelpSupport} options={{...TransitionPresets.ModalSlideFromBottomIOS}}/>
+      <Stack.Screen name="AllShop" component={AllShop} options={{...TransitionPresets.ModalSlideFromBottomIOS}}/>
+      <Stack.Screen name="ShopProduct" component={ShopProduct} options={{...TransitionPresets.ModalSlideFromBottomIOS}}/>
+      <Stack.Screen name="Chat" component={Chat} options={{...TransitionPresets.ModalSlideFromBottomIOS}}/>
+      <Stack.Screen name="ChatBox" component={ChatBox} options={{...TransitionPresets.ModalSlideFromBottomIOS}}/>
+      <Stack.Screen name="Adservices" component={AddServices} options={{...TransitionPresets.ModalSlideFromBottomIOS}}/>
+      <Stack.Screen name="CreateShop" component={CreateShop} options={{...TransitionPresets.ModalSlideFromBottomIOS}}/>
+      <Stack.Screen name="AddProduct" component={AddProduct} options={{...TransitionPresets.ModalSlideFromBottomIOS}}/>
     </Stack.Navigator>
   )
 }

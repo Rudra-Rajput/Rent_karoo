@@ -1,12 +1,54 @@
-import { Image, StyleSheet, Text, TextInput, View, StatusBar } from 'react-native'
-import React from 'react'
+import { Image, StyleSheet, Text, TextInput, View, StatusBar, Alert, ActivityIndicator } from 'react-native'
+import React, { useState } from 'react'
 import Header from '../../components/Header'
 import Button from '../../components/Button'
+import { useUserSendOtpMutation } from '../../redux/services/Profile';
+import Toast from '../../components/Toast';
 
 const Email = ({navigation}) => {
+
+    
+  const [toastVisible, setToastVisible] = useState(false);
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState(false);
+
+  const handleAnimationComplete = () => {
+    setToastVisible(false);
+  };
+
+  const [sendOtp, {isLoading}] = useUserSendOtpMutation();
+
+  const [email, setEmail] = useState(null);
+
+  const handleSubmit = async () => {
+     const data = {email}
+     const res = await sendOtp(data)
+     if (res?.data?.success === true) {
+        setError(false)
+        setToastVisible(true);
+        setMessage(res?.data?.message)
+        setTimeout(() => {
+            navigation.navigate('Otp', { res: JSON.stringify(res), email });
+        }, 1000);
+     } else {
+        setError(true)
+        setToastVisible(true);
+        setMessage('Please check email and try again')
+     }
+  }
+
   return (
     <View style={styles.mainContainer}>
         <StatusBar backgroundColor={'#18241b'}/>
+       
+        {toastVisible && (
+        <Toast
+          message={message}
+          onAnimationComplete={handleAnimationComplete}
+          backgroundColor={error === true ? 'red' : 'green'}
+        />
+      )}
+
        <Header title={'Login with Email'} navigation={navigation} />
 
      <View style={styles.imageContainer}>
@@ -17,11 +59,11 @@ const Email = ({navigation}) => {
 
      <View style={styles.inputContainer}>
         <Text style={styles.inputText}>Email</Text>
-        <TextInput placeholder='Email' keyboardType='email-address' style={styles.inputStyle}/>
+        <TextInput onChangeText={(txt) => setEmail(txt)} placeholder='Email' keyboardType='email-address' style={styles.inputStyle}/>
      </View>
 
      <View style={{position: 'absolute', bottom: 10, width: '100%'}}>
-        <Button onPress={() => navigation.navigate('Otp')} title={'Login'} backgroundColor={'#1631b8'}/>
+        <Button disabled={!email} onPress={handleSubmit} title={isLoading ? <ActivityIndicator size={'small'} color={'#FFFFFF'}/> : 'Login'} backgroundColor={!email ? 'grey':'#1631b8'}/>
      </View>
 
     </View>

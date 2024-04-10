@@ -1,12 +1,47 @@
-import { Image, StyleSheet, Text, TextInput, View, StatusBar } from 'react-native'
-import React from 'react'
+import { Image, StyleSheet, Text, TextInput, View, StatusBar, Alert, ActivityIndicator } from 'react-native'
+import React, { useState } from 'react'
 import Header from '../../components/Header'
 import Button from '../../components/Button'
+import { useUserSendOtpMutation } from '../../redux/services/Profile';
+import Toast from '../../components/Toast';
 
 const Phone = ({navigation}) => {
+
+  const [toastVisible, setToastVisible] = useState(false);
+  const [message, setMessage] = useState('');
+
+  const handleAnimationComplete = () => {
+    setToastVisible(false);
+  };
+
+  const [sendOtp, {isLoading}] = useUserSendOtpMutation();
+
+  const [phoneNo, setPhoneNo] = useState(null);
+
+  const handleSubmit = async () => {
+     const data = {phoneNo}
+     const res = await sendOtp(data)
+     if (res?.data?.success === true) {
+        setToastVisible(true);
+        setMessage(res?.data?.message)
+        setTimeout(() => {
+          navigation.navigate('Otp', { res: JSON.stringify(res), phoneNo });
+        }, 1000);
+     }
+  }
+
   return (
     <View style={styles.mainContainer}>
         <StatusBar backgroundColor={'#18241b'}/>
+
+        {toastVisible && (
+        <Toast
+          message={message}
+          onAnimationComplete={handleAnimationComplete}
+          backgroundColor={'green'}
+        />
+      )}
+
        <Header title={'Login with Phone'} navigation={navigation} />
 
      <View style={styles.imageContainer}>
@@ -17,11 +52,11 @@ const Phone = ({navigation}) => {
 
      <View style={styles.inputContainer}>
         <Text style={styles.inputText}>Phone</Text>
-        <TextInput placeholder='Phone' keyboardType='number-pad' style={styles.inputStyle}/>
+        <TextInput maxLength={10} onChangeText={(txt) => setPhoneNo(txt)} placeholder='Phone' keyboardType='number-pad' style={styles.inputStyle}/>
      </View>
 
      <View style={{position: 'absolute', bottom: 10, width: '100%'}}>
-        <Button onPress={() => navigation.navigate('Otp')} title={'Login'} backgroundColor={'#1631b8'}/>
+        <Button disabled={!phoneNo} onPress={handleSubmit} title={isLoading ? <ActivityIndicator size={'small'} color={'#FFFFFF'}/> : 'Login'} backgroundColor={!phoneNo ? 'grey':'#1631b8'}/>
      </View>
 
     </View>

@@ -1,31 +1,50 @@
-import { StyleSheet, Text, View, FlatList, Image, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, FlatList, Image, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Header from '../../components/Header'
+import {useGetProductByCategoryIdQuery} from '../../redux/services/Profile'
 
-const Product = ({navigation}) => {
+const Product = ({navigation, route}) => {
+
+  const id = route.params?.id
+
+  const {data, isLoading} = useGetProductByCategoryIdQuery(id);
+
+  const name = data?.data?.map((e) => (
+     e?.category
+  ))
+
   return (
-    <View style={styles.mainContainer}>
-
-       <Header title={'Cars'} navigation={navigation}/>
-
-       <View style={{flex: 1, alignSelf: 'center'}}>
-       <FlatList numColumns={2} data={[1,1,1,1,1,1,1,1,1,1,1,1,1]} renderItem={() => {
+   <>
+    { isLoading ? 
+    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+       <ActivityIndicator size={'large'} color={'blue'}/>
+    </View>
+    :
+      <>
+    { data?.data?.length === undefined ? 
+    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+       <Image source={require('../../assets/notfound.png')} style={{width: 280, height: 280}}/>
+    </View> :
+     <View style={styles.mainContainer}>
+       <Header title={name[0]?.Category} navigation={navigation}/>
+       <View style={{flex: 1}}>
+       <FlatList numColumns={2} data={data?.data} renderItem={({item}) => {
         return(
-          <TouchableOpacity onPress={() => navigation.navigate('ProductDetail')} activeOpacity={0.8} style={styles.card}>
-            <Image source={{uri: 'https://cdn.motor1.com/images/mgl/Aen4V/s3/chevrolet-corvette-exterior.webp'}} style={styles.productImage}/>
+          <TouchableOpacity onPress={() => navigation.navigate('ProductDetail', {item})} activeOpacity={0.8} style={styles.card}>
+            <Image source={{uri: `https://rent-karoo.s3.ap-south-1.amazonaws.com/${item?.photos[0]}`}} style={styles.productImage}/>
             <View style={{marginTop: '3%', marginLeft: '5%'}}>
               <Text style={{color: '#000000', fontWeight: '600', fontSize: 15}}>
-                ₹ 25,05,500
+                ₹ {item?.price}
               </Text>
               <Text style={{color: '#000000', fontWeight: '400', fontSize: 13, opacity: 0.7}}>
-                Lorem ipsum dolor sit a...
+                {item?.name}
               </Text>
               <View style={{marginTop: '8%', flexDirection: 'row', alignItems: 'center'}}>
                 <Ionicons name='location-outline' size={18} color={'#000000'} style={{opacity: 0.5}}/>
                 <Text style={{color: '#000000', fontWeight: '400', fontSize: 12, opacity: 0.5, marginLeft: '1%'}}>
-                  New Minal Residency Bh...
+                  {`${item?.fullAddress?.area} ${item?.fullAddress?.city} (${item?.fullAddress?.pincode})`}
                 </Text>
               </View>
             </View>
@@ -36,8 +55,10 @@ const Product = ({navigation}) => {
         )
        }}/>
       </View>
-
-    </View>
+    </View>}
+      </>
+    }
+   </>
   )
 }
 

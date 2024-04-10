@@ -3,56 +3,216 @@ import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 export const profileApi = createApi({
   reducerPath: 'profileApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'https://server.meteoto.in/api/',
+    baseUrl: 'https://server.rentkaroo.com/api/',
   }),
-   tagTypes: ["Status", "Request", "Jobcardstatus", "Shop"],
+   tagTypes: ["User", "Services", "Product", "Shop"],
 
   endpoints: build => ({
-    venderLogin: build.mutation({
+
+    userSendOtp: build.mutation({
       query(data) {
         return {
-          url: 'vendor/login',
+          url: 'user/sendotp',
           method: 'POST',
           body: data,
         };
       },
     }),
 
-    sendOtpVendor: build.mutation({
+    verifyOtp: build.mutation({
       query(data) {
         return {
-          url: 'vendor/otpsent',
+          url: 'user/verifyotp',
           method: 'POST',
           body: data,
         };
       },
     }),
 
-    allServicesByGarage: build.query({
-      query(id) {
+    getALlCategory: build.query({
+      query() {
         return {
-          url: `allservices/by/garage/${id}`,
+          url: `user/category`,
           method: 'GET',
-          // body:data,
-        };
-      },
-        providesTags: ['Request'],
-    }),
-
-    updateShop: build.mutation({
-      query({id, data}) {
-        return {
-          url: `updateShop/${id}`,
-          method: 'POST',
-          body:data,
         }
       },
-      invalidatesTags: ['Shop']
+    }),
+
+    getAllUserProducts: build.query({
+      query() {
+        return {
+          url: `user/products`,
+          method: 'GET',
+        }
+      },
+      providesTags: ["Product"]
+    }),
+
+    getProductByCategoryId: build.query({
+      query(id) {
+        return {
+          url: `user/products/category/${id}`,
+          method: 'GET',
+        }
+      },
+    }),
+
+    getMyAllProduct: build.query({
+      query(token) {
+        return {
+          url: `user/myproducts`,
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      },
+      providesTags: ["Product"]
+    }),
+
+    getAllServices: build.query({
+      query() {
+        return {
+          url: `user/services`,
+          method: 'GET',
+        }
+      },
+      providesTags: ["Services"]
+    }),
+
+    getAllShop: build.query({
+      query() {
+        return {
+          url: `user/shops`,
+          method: 'GET',
+        }
+      },
+      providesTags: ["Shop"]
+    }),
+
+    getShopProductByShopId: build.query({
+      query(shopId) {
+        return {
+          url: `user/shop/products/${shopId}`,
+          method: 'GET',
+        }
+      },
+      providesTags: ["Product"]
+    }),
+    
+    getAllMyServices: build.query({
+      query(token) {
+        return {
+          url: `user/myservices`,
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          method: 'GET',
+        }
+      },
+      providesTags: ["Services"]
+    }),
+
+    getUserProfile: build.query({
+      query(token) {
+        return {
+          url: `user/myprofile`,
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          method: 'GET',
+        }
+      },
+      providesTags: ["User"]
+    }),
+
+    getMyShop: build.query({
+      query(token) {
+        return {
+          url: `shop/myshops`,
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          method: 'GET',
+        }
+      },
+      providesTags: ["Shop"]
+    }),
+
+    updateUserProfile: build.mutation({
+      query({token, data}) {
+        return {
+          url: `user/update`,
+          method: 'POST',
+          body: data,
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      },
+      invalidatesTags: ["User"]
+    }),
+
+    uploadProduct: build.mutation({
+      query({token, data}) {
+        return {
+          url: `product/create`,
+          method: 'POST',
+          body: data,
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      },
+      invalidatesTags: ["Product"]
+    }),
+
+    addService: build.mutation({
+      query({token, data}) {
+        return {
+          url: `service/create`,
+          method: 'POST',
+          body: data,
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      },
+      invalidatesTags: ["Services"]
+    }),
+
+    CreateSpecialShop: build.mutation({
+      query({token, data}) {
+        return {
+          url: `shop/create`,
+          method: 'POST',
+          body: data,
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      },
+      invalidatesTags: ["Shop"]
     }),
 
   }),
 });
 
 export const {
-  
+    useCreateSpecialShopMutation,
+    useGetMyShopQuery,
+    useUpdateUserProfileMutation,
+    useGetUserProfileQuery,
+    useGetShopProductByShopIdQuery,
+    useGetAllShopQuery,
+    useAddServiceMutation,
+    useGetAllServicesQuery,
+    useGetAllMyServicesQuery,
+    useUploadProductMutation,
+    useGetMyAllProductQuery,
+    useGetProductByCategoryIdQuery,
+    useGetAllUserProductsQuery,
+    useGetALlCategoryQuery,
+    useUserSendOtpMutation,
+    useVerifyOtpMutation,
 } = profileApi;

@@ -1,12 +1,22 @@
-import {Image, Text, View} from 'react-native';
+import { StatusBar, View } from 'react-native';
 import React from 'react';
+import LottieView from 'lottie-react-native';
+import { getToken } from '../../redux/services/LocalStorage';
+import { StackActions } from '@react-navigation/native';
 
-const Splash = ({navigation}) => {
+const Splash = ({ navigation }) => {
+
   React.useEffect(() => {
     setTimeout(() => {
-      navigation.navigate('Landing');
+      (async () => {
+        const token = await getToken();
+        const routeName = token !== undefined ? 'Main' : 'Landing';
+        navigation.dispatch(StackActions.replace(routeName));
+      })();
     }, 3000);
-  }, []);
+  });  
+
+  <StatusBar backgroundColor={'#FFFFFF'} barStyle={'dark-content'}/>
 
   return (
     <View
@@ -16,16 +26,11 @@ const Splash = ({navigation}) => {
         justifyContent: 'center',
         alignItems: 'center',
       }}>
-      <Image
-        source={{
-          uri: 'https://logos-world.net/wp-content/uploads/2022/04/OLX-Symbol.png',
-        }}
-        style={{
-          width: 150,
-          height: 150,
-          borderRadius: 150,
-          resizeMode: 'contain',
-        }}
+      <LottieView
+        source={require('../../assets/LottieFiles/splash.json')}
+        autoPlay
+        loop
+        style={{width: 200, height: 200}}
       />
     </View>
   );

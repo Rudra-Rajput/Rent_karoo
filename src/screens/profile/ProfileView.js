@@ -6,7 +6,16 @@ import Feather from 'react-native-vector-icons/Feather'
 import Header from '../../components/Header'
 import Button from '../../components/Button'
 
-const ProfileView = ({navigation}) => {
+const ProfileView = ({navigation, route}) => {
+
+  const {data} = route.params
+  console.log(data, 'data')
+
+  const date = new Date(data?.data?.createdAt);
+  const month = date.toLocaleString('default', { month: 'long' });
+  const year = date.getFullYear();
+  const formattedDate = `${month} ${year}`;
+
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={styles.mainContainer}>
       <StatusBar backgroundColor={'#18241b'}/>
@@ -15,23 +24,23 @@ const ProfileView = ({navigation}) => {
 
       <View style={styles.profileDetailsContainer}>
          <View style={styles.profilepicContainer}>
-            <Image source={{uri: 'https://play-lh.googleusercontent.com/C9CAt9tZr8SSi4zKCxhQc9v4I6AOTqRmnLchsu1wVDQL0gsQ3fmbCVgQmOVM1zPru8UH=w240-h480-rw'}} style={styles.profilePic}/>
-            <Text style={styles.profileText}>Rudra Pratap Singh</Text>
+            <Image source={data?.data?.picture !== "" ? {uri: `https://rent-karoo.s3.ap-south-1.amazonaws.com/${data?.data?.picture}`} : require('../../assets/profile.png')} style={styles.profilePic}/>
+            <Text style={styles.profileText}>{data?.data?.firstName ? `${data?.data?.firstName} ${data?.data?.lastName}` : 'User'}</Text>
          </View>
          <View style={{marginTop: '5%', marginLeft: '2%', flexDirection: 'row', alignItems: 'center'}}>
             <Entypo name='calendar' size={20} color={'#000000'} style={{opacity: 0.5}}/>
-            <Text style={{marginLeft: '5%', fontWeight: '500', color: '#000000', opacity: 0.5, fontSize: 14}}>Member since Mar 2020</Text>
+            <Text style={{marginLeft: '5%', fontWeight: '500', color: '#000000', opacity: 0.5, fontSize: 14}}>Member since {formattedDate}</Text>
          </View>
-         <View style={{marginTop: '3%', marginLeft: '2%', flexDirection: 'row', alignItems: 'center'}}>
+         {data?.data?.email ? <View style={{marginTop: '3%', marginLeft: '2%', flexDirection: 'row', alignItems: 'center'}}>
             <MaterialCommunityIcons name='email' size={20} color={'#000000'} style={{opacity: 0.5}}/>
-            <Text style={{marginLeft: '5%', fontWeight: '500', color: '#000000', opacity: 0.5, fontSize: 14}}>rudransh@example.com</Text>
-         </View>
-         <View style={{marginTop: '3%', marginLeft: '2%', flexDirection: 'row', alignItems: 'center'}}>
+            <Text style={{marginLeft: '5%', fontWeight: '500', color: '#000000', opacity: 0.5, fontSize: 14}}>{data?.data?.email}</Text>
+         </View> : null}
+         {data?.data?.phoneNo ? <View style={{marginTop: '3%', marginLeft: '2%', flexDirection: 'row', alignItems: 'center'}}>
             <Feather name='headphones' size={20} color={'#000000'} style={{opacity: 0.5}}/>
-            <Text style={{marginLeft: '5%', fontWeight: '500', color: '#000000', opacity: 0.5, fontSize: 14}}>+91 | 9555123085</Text>
-         </View>
+            <Text style={{marginLeft: '5%', fontWeight: '500', color: '#000000', opacity: 0.5, fontSize: 14}}>+91 | {data?.data?.phoneNo}</Text>
+         </View> : null}
          <View style={{marginTop: '10%'}}>
-           <Button onPress={() => navigation.navigate('Edit')} title={'Edit Profile'} backgroundColor={'#28802c'}/>
+           <Button onPress={() => navigation.navigate('Edit', {data})} title={'Edit Profile'} backgroundColor={'#28802c'}/>
          </View>
       </View>
 
@@ -80,7 +89,9 @@ const styles = StyleSheet.create({
     color: '#000000',
     letterSpacing: .5,
     marginLeft: '6%',
-    opacity: 0.7
+    opacity: 0.7,
+    textDecorationLine: 'underline',
+    textDecorationStyle: 'double'
   },
   sellingContainer: {
     marginTop: '-5%',

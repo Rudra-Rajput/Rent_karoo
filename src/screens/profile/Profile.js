@@ -1,21 +1,60 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, StatusBar } from 'react-native';
+import { StyleSheet, Alert, Text, View, TouchableOpacity, Image, StatusBar, ActivityIndicator } from 'react-native';
 import React from 'react';
 import Header from '../../components/Header';
+import {useGetUserProfileQuery} from '../../redux/services/Profile'
+import {useSelector} from 'react-redux';
+import { removeToken } from '../../redux/services/LocalStorage';
+import { StackActions } from '@react-navigation/native';
+import { unsetUserToken } from '../../redux/Slices/authSlice'
 
 const Profile = ({navigation}) => {
+
+  const {token} = useSelector(state => state.auth);
+
+  const {data, isLoading} = useGetUserProfileQuery(token);
+
+  const handleLogOut = async() => {
+    unsetUserToken({token: null});
+    await removeToken('token');
+    navigation.dispatch(StackActions.replace('Landing'));
+  }
+
+  const logOut = () => {
+    Alert.alert(
+      'Alert',
+      'Are you sure you want to Log out !',
+      [
+        {
+          text: 'Yes',
+          onPress: () => {
+            handleLogOut();
+          },
+        },
+        {
+          text: 'Cancel',
+          onPress: () => {},
+        },
+      ],
+    );
+  }
+
   return (
-    <View style={styles.mainContainer}>
+   <>
+    { isLoading ? <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <ActivityIndicator size={'large'} color={'blue'}/>
+    </View> :
+      <View style={styles.mainContainer}>
       <StatusBar backgroundColor={'#18241b'}/>
       
       <Header navigation={navigation} title={'Profile'} />
 
        <View style={styles.profileContainer}>
-          <Image source={{uri: 'https://play-lh.googleusercontent.com/C9CAt9tZr8SSi4zKCxhQc9v4I6AOTqRmnLchsu1wVDQL0gsQ3fmbCVgQmOVM1zPru8UH=w240-h480-rw'}} style={styles.profilePic}/>
-          <Text style={styles.profileText}>Rudra Pratap Singh</Text>
+          <Image source={data?.data?.picture !== "" ? {uri: `https://rent-karoo.s3.ap-south-1.amazonaws.com/${data?.data?.picture}`} : require('../../assets/profile.png')} style={styles.profilePic}/>
+          <Text style={styles.profileText}>{data?.data?.firstName ? `${data?.data?.firstName} ${data?.data?.lastName}` : 'User'}</Text>
        </View>
 
        <View style={{marginTop: '25%'}}>
-         <TouchableOpacity onPress={()=>navigation.navigate('ProfileView')} activeOpacity={0.8} style={styles.section}>
+         <TouchableOpacity onPress={()=>navigation.navigate('ProfileView', {data})} activeOpacity={0.8} style={styles.section}>
            <Text style={styles.sectionText}>View and Edit Profile</Text>
          </TouchableOpacity>
          <TouchableOpacity onPress={() => navigation.navigate('Setting')} activeOpacity={0.8} style={[styles.section, {marginTop: '3%'}]}>
@@ -24,12 +63,14 @@ const Profile = ({navigation}) => {
          <TouchableOpacity onPress={() => navigation.navigate('HelpSupport')} activeOpacity={0.8} style={[styles.section, {marginTop: '3%'}]}>
            <Text style={styles.sectionText}>Help & Support</Text>
          </TouchableOpacity>
-         <TouchableOpacity activeOpacity={0.8} style={[styles.section, {marginTop: '3%'}]}>
+         <TouchableOpacity onPress={logOut} activeOpacity={0.8} style={[styles.section, {marginTop: '3%'}]}>
            <Text style={styles.sectionText}>Log Out</Text>
          </TouchableOpacity>
        </View>
 
-    </View>
+    </View>}
+    </>
+
   )
 }
 
@@ -59,7 +100,9 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     color: '#000000',
     fontSize: 16,
-    fontWeight: '500'
+    fontWeight: '500',
+    textDecorationStyle: 'double',
+    textDecorationLine: 'underline'
   },
   section: {
     width: '92%',

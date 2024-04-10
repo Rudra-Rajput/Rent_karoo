@@ -7,11 +7,11 @@
 #define TIMEOUT_SECONDS 600
 #define TEXT_TO_LOOK_FOR @"Welcome to React"
 
-@interface olxCloneTests : XCTestCase
+@interface Rent KaroTests : XCTestCase
 
 @end
 
-@implementation olxCloneTests
+@implementation Rent KaroTests
 
 - (BOOL)findSubviewInView:(UIView *)view matching:(BOOL (^)(UIView *view))test
 {

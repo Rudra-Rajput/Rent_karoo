@@ -3,12 +3,13 @@ import React from 'react'
 import Feather from 'react-native-vector-icons/Feather'
 
 const LandingScreen = ({navigation}) => {
+
   return (
     <View style={styles.mainContainer}>
         <StatusBar backgroundColor={'#18241b'}/>
        <View style={styles.section1}>
           <View>
-            <Image source={{uri: 'https://logos-world.net/wp-content/uploads/2022/04/OLX-Symbol.png'}} style={styles.logo}/>
+            <Image source={require('../../assets/logoo.jpeg')} style={styles.logo}/>
           </View>
        </View>
        <View style={styles.section2}>
@@ -22,7 +23,7 @@ const LandingScreen = ({navigation}) => {
           </TouchableOpacity>
           <View style={styles.privacyTextContainer}>
              <Text style={styles.privacyText}>if you continue, you are accepting</Text>
-             <Text style={[styles.privacyText, {textDecorationLine: 'underline'}]}>OLX Terms and Conditions and Privacy Policy</Text>
+             <Text style={[styles.privacyText, {textDecorationLine: 'underline'}]}>Rent Karoo Terms and Conditions and Privacy Policy</Text>
           </View>
        </View>
     </View>
@@ -45,7 +46,9 @@ const styles = StyleSheet.create({
     section2: {
         height: '40%',
         width: '100%',
-        backgroundColor: '#18241b'
+        backgroundColor: '#520a21',
+        borderTopRightRadius: 35,
+        borderTopLeftRadius: 35
     },
     logo: {
         width: 150,

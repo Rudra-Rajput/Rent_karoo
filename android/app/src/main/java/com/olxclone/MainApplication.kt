@@ -1,4 +1,4 @@
-package com.olxclone
+package com.rent_rentkaro
 
 import android.app.Application
 import com.facebook.react.PackageList

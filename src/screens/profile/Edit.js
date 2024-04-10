@@ -1,39 +1,97 @@
-import { StyleSheet, Text, View, StatusBar, Image, TouchableOpacity } from 'react-native'
-import React from 'react'
+import { StyleSheet, View, StatusBar, Image, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native'
+import React, { useState } from 'react'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Header from '../../components/Header'
 import { TextInput } from 'react-native-paper'
 import Button from '../../components/Button'
+import {useUpdateUserProfileMutation} from '../../redux/services/Profile'
+import {useSelector} from 'react-redux';
+import DocumentPicker from 'react-native-document-picker';
 
-const Edit = ({navigation}) => {
+const Edit = ({navigation, route}) => {
+
+  const {data} = route.params
+  const {token} = useSelector(state => state.auth);
+  const [updateProfile, {isLoading}] = useUpdateUserProfileMutation();
+
+  const [firstName, setFirstName] = useState(data?.data?.firstName || "");
+  const [lastName, setLastName] = useState(data?.data?.lastName || "");
+  const [email, setEmail] = useState(data?.data?.email || "");
+  const [phoneNo, setPhoneNo] = useState(data?.data?.phoneNo || "");
+  const [picture, setPicture] = useState(data?.data?.picture);
+  const [selectedpic, setSelectedPic] = useState(false);
+
+  const selectDocument = async () => {
+    try {
+      const doc = await DocumentPicker.pick({
+        type: [DocumentPicker.types.images],
+      });
+      setPicture(doc[0]);
+      setSelectedPic(true)
+    } catch (error) {
+      if (DocumentPicker.isCancel(error)) {
+      } else {
+        console.log(error);
+      }
+    }
+  };
+
+  const handleSubmit = async () => {
+    const data = new FormData()
+    data.append('firstName', firstName)
+    data.append('lastName', lastName)
+    data.append('email', email)
+    data.append('phoneNo', phoneNo)
+    if (selectedpic === true) {
+      data.append('picture', picture)
+    }
+    const res = await updateProfile({token, data})
+    if (res?.data?.success === true) {
+      alert(res?.data?.message)
+      navigation.navigate('Profile')
+    }
+    console.log(res, 'response')
+  }
+
   return (
-    <View style={styles.mainContainer}>
+    <ScrollView showsVerticalScrollIndicator={false} style={styles.mainContainer}>
       <StatusBar backgroundColor={'#18241b'} />
 
-      <Header title={'Edit Profile'} navigation={navigation}/>
-
+      <Header title={'Edit Profile'} navigation={navigation}/>  
       <View style={styles.profileContainer}>
-         <Image source={{uri: 'https://play-lh.googleusercontent.com/C9CAt9tZr8SSi4zKCxhQc9v4I6AOTqRmnLchsu1wVDQL0gsQ3fmbCVgQmOVM1zPru8UH=w240-h480-rw'}} style={styles.profilePic}/>
-         <TouchableOpacity activeOpacity={0.8} style={styles.cameraContainer}>
+      <Image
+  source={
+    picture != ""
+      ? selectedpic == false
+        ? { uri: `https://rent-karoo.s3.ap-south-1.amazonaws.com/${picture}` }
+        : {uri: picture.uri}
+      : require('../../assets/profile.png')
+  }
+  style={styles.profilePic}
+/>
+         <TouchableOpacity onPress={selectDocument} activeOpacity={0.8} style={styles.cameraContainer}>
             <Entypo name='camera' size={20} color={'#000000'}/>
          </TouchableOpacity>
       </View>
 
       <View style={[styles.inputContainer, {marginTop: '10%'}]}>
-        <TextInput mode='flat' keyboardType='name-phone-pad' value='Rudra Pratap Singh' label={'Name'} style={styles.input}/>
+        <TextInput mode='flat' onChangeText={setFirstName} keyboardType='name-phone-pad' value={firstName} label={'First name'} style={styles.input}/>
+      </View>
+      <View style={[styles.inputContainer, {marginTop: '10%'}]}>
+        <TextInput mode='flat' onChangeText={setLastName} keyboardType='name-phone-pad' value={lastName} label={'Last name'} style={styles.input}/>
       </View>
       <View style={[styles.inputContainer, {marginTop: '5%'}]}>
-        <TextInput mode='flat' keyboardType='email-address' value='rudransh@example.com' label={'Email'} style={styles.input}/>
+        <TextInput mode='flat' onChangeText={setEmail} keyboardType='email-address' value={email} label={'Email'} style={styles.input}/>
       </View>
       <View style={[styles.inputContainer, {marginTop: '5%'}]}>
-        <TextInput mode='flat' keyboardType='number-pad' value='+91 | 9555123085' label={'Phone'} style={styles.input}/>
+        <TextInput mode='flat' onChangeText={setPhoneNo} keyboardType='number-pad' value={String(phoneNo)} label={'Phone'} style={styles.input}/>
       </View>
 
       <View style={{marginTop: '20%'}}>
-         <Button title={'Save'} backgroundColor={'#28802c'}/>
+         <Button disabled={isLoading} onPress={handleSubmit} title={isLoading ? <ActivityIndicator size={'small'} color={'#FFFFFF'}/> : 'Save'} backgroundColor={'#28802c'}/>
       </View>
 
-    </View>
+    </ScrollView>
   )
 }
 
@@ -56,7 +114,7 @@ const styles = StyleSheet.create({
        width: 150,
        height: 150,
        borderRadius: 10,
-       resizeMode: 'contain'
+       resizeMode: 'cover'
     },
     cameraContainer: {
         width: 35,

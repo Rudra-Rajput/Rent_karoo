@@ -2,7 +2,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Home from '../screens/home/Home';
 import Profile from '../screens/profile/Profile';
-import Fav from '../screens/home/Fav';
+import Chat from '../screens/chat/Chat'
 import Sell from '../screens/home/Sell';
 import Services from '../screens/Services/Services';
 
@@ -21,8 +21,8 @@ const MyTab = () => {
                 iconName = 'home'; 
               } else if (route.name === 'Profile') {
                 iconName = 'person-circle-sharp';
-              } else if (route.name === 'Favourite') {
-                iconName = 'heart-sharp';
+              } else if (route.name === 'Chat') {
+                iconName = 'chatbubble-sharp';
               } else if (route.name === 'Sell') {
                 iconName = 'bag-handle';
               } else if (route.name === 'Services') {
@@ -40,7 +40,7 @@ const MyTab = () => {
           <Tab.Screen name="Home" component={Home} />
           <Tab.Screen name="Sell" component={Sell} />
           <Tab.Screen name="Services" component={Services} />
-          <Tab.Screen name="Favourite" component={Fav} />
+          <Tab.Screen name="Chat" component={Chat} />
           <Tab.Screen name="Profile" component={Profile} />
         </Tab.Navigator>
       );

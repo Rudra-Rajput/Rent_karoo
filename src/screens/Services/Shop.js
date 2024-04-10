@@ -1,67 +1,80 @@
-import { Image, StatusBar, StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native'
+import { Linking, StatusBar, StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native'
 import React from 'react'
 import Entypo from 'react-native-vector-icons/Entypo'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Feather from 'react-native-vector-icons/Feather'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Header from '../../components/Header'
+import Slider from '../../components/Slider'
 
-const Shop = ({navigation}) => {
+const Shop = ({navigation, route}) => {
+
+  const data = route.params?.item
+
+  const date = new Date(data?.createdAt);
+  const month = date.toLocaleString('default', { month: 'long' });
+  const year = date.getFullYear();
+  const formattedDate = `${month} ${year}`;
+
+  const message = 'Hello there!';
+  const encodedMessage = encodeURIComponent(message);
+
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={styles.mainContainer}>
       <StatusBar backgroundColor={'#18241b'}/>
 
-      <Header title={'Shop Details'} navigation={navigation}/>
+      <Header title={'Service Details'} navigation={navigation}/>
+
+        <Slider photos={data?.photos}/>
 
       <View style={styles.profileDetailsContainer}>
-         <View style={styles.profilepicContainer}>
-            <Image source={{uri: 'https://cdn.pixabay.com/photo/2013/07/13/11/31/shop-158317_640.png'}} style={styles.profilePic}/>
-            <Text style={styles.profileText}>Apex Garage</Text>
-         </View>
+        <Text style={styles.profileText}>{data?.name}</Text>
          <View style={{marginTop: '5%', marginLeft: '2%', flexDirection: 'row', alignItems: 'center'}}>
             <Entypo name='calendar' size={20} color={'#000000'} style={{opacity: 0.7}}/>
-            <Text style={{marginLeft: '5%', fontWeight: '500', color: '#000000', opacity: 0.7, fontSize: 14}}>Member since Mar 2020</Text>
+            <Text style={{marginLeft: '5%', fontWeight: '500', color: '#000000', opacity: 0.7, fontSize: 14}}>Member since {formattedDate}</Text>
          </View>
          <View style={{marginTop: '3%', marginLeft: '2%', flexDirection: 'row', alignItems: 'center'}}>
             <MaterialCommunityIcons name='email' size={20} color={'#000000'} style={{opacity: 0.7}}/>
-            <Text style={{marginLeft: '5%', fontWeight: '500', color: '#000000', opacity: 0.7, fontSize: 14}}>rudransh@example.com</Text>
+            <Text style={{marginLeft: '5%', fontWeight: '500', color: '#000000', opacity: 0.7, fontSize: 14}}>{data?.email}</Text>
          </View>
          <View style={{marginTop: '3%', marginLeft: '2%', flexDirection: 'row', alignItems: 'center'}}>
             <Feather name='headphones' size={20} color={'#000000'} style={{opacity: 0.7}}/>
-            <Text style={{marginLeft: '5%', fontWeight: '500', color: '#000000', opacity: 0.7, fontSize: 14}}>+91 | 9555123085</Text>
+            <Text style={{marginLeft: '5%', fontWeight: '500', color: '#000000', opacity: 0.7, fontSize: 14}}>+91 | {data?.phoneNo}</Text>
          </View>
       </View>
 
       <View style={{marginTop: '3%', marginHorizontal: '6%', flexDirection: 'row', alignItems: 'center'}}>
          <Text style={[styles.heading, {alignSelf: 'flex-start'}]}>Specialization -</Text>
-         <Text style={{fontSize: 15, color: '#000000', fontWeight: '500', marginLeft: '5%'}}>Plumber service</Text> 
+         <Text style={{fontSize: 15, color: '#000000', fontWeight: '500', marginLeft: '5%'}}>{data?.subtitle}</Text> 
       </View>
 
       <View style={styles.iconContainer}>
-        <TouchableOpacity activeOpacity={0.5}>
+        <TouchableOpacity onPress={() => Linking.openURL(`tel: ${data?.phoneNo}`)} activeOpacity={0.5}>
          <Feather name='phone-call' size={28} color={'#165c4a'}/>
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.5}>
+        <TouchableOpacity onPress={() => Linking.openURL(`sms:${data?.phoneNo}`)} activeOpacity={0.5}>
          <AntDesign name='message1' size={28} color={'#165c4a'}/>
         </TouchableOpacity>
       </View>
 
       <View style={{marginLeft: '5%', marginTop: '5%'}}>
-         <Text style={[styles.heading, {alignSelf: 'flex-start'}]}>Shop Address -</Text>
-         <Text style={styles.address}>A/63 Indrapuri A Sector Near Panchwati park Bhopal (462022)</Text>
+         <Text style={[styles.heading, {alignSelf: 'flex-start'}]}>Service Address -</Text>
+         <Text style={styles.address}>{`${data?.fullAddress?.area} ${data?.fullAddress?.city} (${data?.fullAddress?.pincode})`}</Text>
       </View>
 
       <View style={styles.horizontalLine}></View>
 
       <View style={{marginLeft: '5%', marginTop: '-5%'}}>
-         <Text style={[styles.heading, {alignSelf: 'flex-start', textDecorationLine: 'underline'}]}>List of services</Text>
+
+        <Text style={[styles.heading, {alignSelf: 'flex-start', textDecorationLine: 'underline'}]}>Description</Text>
          <View style={{marginTop: '0%'}}>
-            <Text style={styles.serviceText}>1. Plumber</Text>
-            <Text style={styles.serviceText}>2. Construction</Text>
-            <Text style={styles.serviceText}>3. Cleaning</Text>
-            <Text style={styles.serviceText}>4. Mistri Ondoor</Text>
-            <Text style={styles.serviceText}>5. Pest Control</Text>
-            <Text style={styles.serviceText}>6. Water Care</Text>
+          <Text style={styles.serviceText}>{data?.description}</Text>
+        </View>
+
+         <Text style={[styles.heading, {alignSelf: 'flex-start', textDecorationLine: 'underline', marginTop: '10%'}]}>List of services</Text>
+         <View style={{marginTop: '0%'}}>
+            <Text style={styles.serviceText}>1. {data?.name}</Text>
+            <Text style={styles.serviceText}>2. {data?.subtitle}</Text>
          </View>
       </View>
 
@@ -94,7 +107,7 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: '#000000',
     letterSpacing: .5,
-    marginLeft: '6%',
+    marginLeft: '2%',
     opacity: 0.7
   },
   sellingContainer: {
@@ -162,6 +175,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '500',
     color: '#293791',
-    marginTop: '4%'
+    marginTop: '4%',
+    marginRight: '2%'
   }
 })
