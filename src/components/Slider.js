@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, FlatList, StyleSheet, Dimensions, Image, StatusBar, ScrollView } from 'react-native';
+import { View, FlatList, StyleSheet, Dimensions, Image, ScrollView } from 'react-native';
 
 const WIDTH = Dimensions.get('window').width;
 

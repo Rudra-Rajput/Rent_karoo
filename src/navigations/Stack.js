@@ -29,6 +29,7 @@ import ChatBox from '../screens/chat/ChatBox';
 import AddServices from '../screens/Services/AddServices';
 import CreateShop from '../screens/SpecialServices.js/CreateShop';
 import AddProduct from '../screens/SpecialServices.js/AddProduct';
+import Enquiry from '../screens/home/Enquiry';
 
 const Stack = createStackNavigator();
 
@@ -64,6 +65,7 @@ const MyStack = () => {
       <Stack.Screen name="Adservices" component={AddServices} options={{...TransitionPresets.ModalSlideFromBottomIOS}}/>
       <Stack.Screen name="CreateShop" component={CreateShop} options={{...TransitionPresets.ModalSlideFromBottomIOS}}/>
       <Stack.Screen name="AddProduct" component={AddProduct} options={{...TransitionPresets.ModalSlideFromBottomIOS}}/>
+      <Stack.Screen name="Enquiry" component={Enquiry} options={{...TransitionPresets.ModalSlideFromBottomIOS}}/>
     </Stack.Navigator>
   )
 }

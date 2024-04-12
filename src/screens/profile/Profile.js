@@ -1,42 +1,48 @@
 import { StyleSheet, Alert, Text, View, TouchableOpacity, Image, StatusBar, ActivityIndicator } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import Header from '../../components/Header';
 import {useGetUserProfileQuery} from '../../redux/services/Profile'
 import {useSelector} from 'react-redux';
 import { removeToken } from '../../redux/services/LocalStorage';
 import { StackActions } from '@react-navigation/native';
 import { unsetUserToken } from '../../redux/Slices/authSlice'
+import LogOutModal from '../../components/LogOutModal';
 
 const Profile = ({navigation}) => {
 
   const {token} = useSelector(state => state.auth);
+  const [isOpen, setIsOpen] = useState(false);
 
   const {data, isLoading} = useGetUserProfileQuery(token);
 
-  const handleLogOut = async() => {
-    unsetUserToken({token: null});
-    await removeToken('token');
-    navigation.dispatch(StackActions.replace('Landing'));
-  }
+  const handleLogout = () => {
+    setIsOpen(!isOpen)
+  };
 
-  const logOut = () => {
-    Alert.alert(
-      'Alert',
-      'Are you sure you want to Log out !',
-      [
-        {
-          text: 'Yes',
-          onPress: () => {
-            handleLogOut();
-          },
-        },
-        {
-          text: 'Cancel',
-          onPress: () => {},
-        },
-      ],
-    );
-  }
+  // const handleLogOut = async() => {
+  //   unsetUserToken({token: null});
+  //   await removeToken('token');
+  //   navigation.dispatch(StackActions.replace('Landing'));
+  // }
+
+  // const logOut = () => {
+  //   Alert.alert(
+  //     'Alert',
+  //     'Are you sure you want to Log out !',
+  //     [
+  //       {
+  //         text: 'Yes',
+  //         onPress: () => {
+  //           handleLogOut();
+  //         },
+  //       },
+  //       {
+  //         text: 'Cancel',
+  //         onPress: () => {},
+  //       },
+  //     ],
+  //   );
+  // }
 
   return (
    <>
@@ -53,6 +59,8 @@ const Profile = ({navigation}) => {
           <Text style={styles.profileText}>{data?.data?.firstName ? `${data?.data?.firstName} ${data?.data?.lastName}` : 'User'}</Text>
        </View>
 
+       <LogOutModal navigation={navigation} isOpen={isOpen} />
+
        <View style={{marginTop: '25%'}}>
          <TouchableOpacity onPress={()=>navigation.navigate('ProfileView', {data})} activeOpacity={0.8} style={styles.section}>
            <Text style={styles.sectionText}>View and Edit Profile</Text>
@@ -63,7 +71,7 @@ const Profile = ({navigation}) => {
          <TouchableOpacity onPress={() => navigation.navigate('HelpSupport')} activeOpacity={0.8} style={[styles.section, {marginTop: '3%'}]}>
            <Text style={styles.sectionText}>Help & Support</Text>
          </TouchableOpacity>
-         <TouchableOpacity onPress={logOut} activeOpacity={0.8} style={[styles.section, {marginTop: '3%'}]}>
+         <TouchableOpacity onPress={() => handleLogout()} activeOpacity={0.8} style={[styles.section, {marginTop: '3%'}]}>
            <Text style={styles.sectionText}>Log Out</Text>
          </TouchableOpacity>
        </View>

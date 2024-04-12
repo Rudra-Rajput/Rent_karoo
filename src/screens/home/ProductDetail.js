@@ -5,35 +5,16 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import Slider from '../../components/Slider'
 import Header from '../../components/Header'
 import Button from '../../components/Button'
-import Toast from '../../components/Toast'
 
 const ProductDetail = ({navigation, route}) => {
 
-  const [toastVisible, setToastVisible] = React.useState(false);
-
   const data = route.params?.item;
-
-  const handleSubmit = () => {
-    setToastVisible(true);
-  }
-
-  const handleAnimationComplete = () => {
-    setToastVisible(false);
-  };
 
   return (
     <>
     <ScrollView showsVerticalScrollIndicator = {false} style={{flex: 1, backgroundColor: '#FFFFFF'}}>
       <StatusBar backgroundColor={'#18241b'}/>
-
-      {toastVisible && (
-        <Toast
-          message="Hello, this is a custom animated toast message!"
-          onAnimationComplete={handleAnimationComplete}
-          backgroundColor={'red'}
-        />
-      )}
-        
+      
        <Header title={'Product Details'} navigation={navigation} />
        <Slider photos={data?.photos}/>
 
@@ -73,7 +54,7 @@ const ProductDetail = ({navigation, route}) => {
     </ScrollView>
 
     <View style={styles.buttonContainer}>
-      <Button onPress={handleSubmit} title={'Enquiry Now'} backgroundColor={'#196915'}/>
+      <Button onPress={() => navigation.navigate('Enquiry')} title={'Enquiry Now'} backgroundColor={'#196915'}/>
     </View>
 
     </>

@@ -22,16 +22,29 @@ import {
   useGetMyShopQuery,
 } from '../../redux/services/Profile';
 import {useSelector} from 'react-redux';
+import FilterModal from '../../components/FilterModal';
 
 const AllShop = ({navigation}) => {
+
   const [serviceType, setServiceType] = useState('allShop');
   const [mainData, setMainData] = useState(null);
+  const [search, setSearch] = useState('');
 
   const {token} = useSelector(state => state.auth);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [checked, setChecked] = useState(false);
 
-  const {data, isLoading} = useGetAllShopQuery();
+  const [dist, setDist] = useState(500000)
+  const [isVisible, setIsVisible] = useState(false);
+
+  const handleModal = () => {
+    setIsVisible(!isVisible);
+  };
+
+  const handleSelectedValue = (selectedValue) => {
+    const numberValue = parseInt(selectedValue, 10);
+    setDist(numberValue)
+  };
+
+  const {data, isLoading} = useGetAllShopQuery({search, dist});
   const {data: myShop} = useGetMyShopQuery(token);
 
   useEffect(() => {
@@ -118,6 +131,27 @@ const AllShop = ({navigation}) => {
             )}
           </View>
 
+          <View style={styles.searchBarContainer}>
+            <View style={styles.inputContainer}>
+              <TextInput
+                placeholder="Search Here..."
+                style={styles.inputStyle}
+                onChangeText={setSearch}
+              />
+            </View>
+            <TouchableOpacity onPress={handleModal}>
+              <Ionicons
+                name="filter"
+                size={30}
+                color={'#000000'}
+                style={{marginRight: '3%'}}
+              />
+            </TouchableOpacity>
+          </View>
+
+          {/* TODO: Modal */}
+          <FilterModal visible={isVisible} onClose={handleModal} onSelectedValue={handleSelectedValue}/>
+
           {mainData?.data?.length === 0 ? (
             <View
               style={{
@@ -132,115 +166,6 @@ const AllShop = ({navigation}) => {
             </View>
           ) : (
             <>
-              <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => {
-                  setModalVisible(false);
-                }}>
-                <TouchableOpacity
-                  activeOpacity={1}
-                  style={styles.modalContainer}>
-                  <View style={styles.modalContent}>
-                    <Text style={styles.heading}>Filter services by range</Text>
-
-                    <View style={[styles.checkBoxContainer, {marginTop: '3%'}]}>
-                      <Checkbox
-                        status={checked ? 'checked' : 'unchecked'}
-                        onPress={() => {
-                          setChecked(!checked);
-                        }}
-                      />
-                      <Text style={styles.checkText}>0km to 5km</Text>
-                    </View>
-
-                    <View style={[styles.checkBoxContainer, {marginTop: '1%'}]}>
-                      <Checkbox
-                        status={checked ? 'checked' : 'unchecked'}
-                        onPress={() => {
-                          setChecked(!checked);
-                        }}
-                      />
-                      <Text style={styles.checkText}>5km to 10km</Text>
-                    </View>
-
-                    <View style={[styles.checkBoxContainer, {marginTop: '1%'}]}>
-                      <Checkbox
-                        status={checked ? 'checked' : 'unchecked'}
-                        onPress={() => {
-                          setChecked(!checked);
-                        }}
-                      />
-                      <Text style={styles.checkText}>10km to 15km</Text>
-                    </View>
-
-                    <View style={[styles.checkBoxContainer, {marginTop: '1%'}]}>
-                      <Checkbox
-                        status={checked ? 'checked' : 'unchecked'}
-                        onPress={() => {
-                          setChecked(!checked);
-                        }}
-                      />
-                      <Text style={styles.checkText}>15km to 20km</Text>
-                    </View>
-
-                    <View style={[styles.checkBoxContainer, {marginTop: '1%'}]}>
-                      <Checkbox
-                        status={checked ? 'checked' : 'unchecked'}
-                        onPress={() => {
-                          setChecked(!checked);
-                        }}
-                      />
-                      <Text style={styles.checkText}>All range</Text>
-                    </View>
-
-                    <View
-                      style={{
-                        position: 'absolute',
-                        width: '100%',
-                        bottom: 10,
-                        alignSelf: 'center',
-                      }}>
-                      <Button
-                        title={'Apply'}
-                        backgroundColor={'#288052'}
-                        onPress={() => setModalVisible(false)}
-                      />
-                    </View>
-
-                    <TouchableOpacity
-                      activeOpacity={0.8}
-                      style={{position: 'absolute', top: 10, right: 10}}
-                      onPress={() => setModalVisible(false)}>
-                      <Entypo
-                        name="circle-with-cross"
-                        size={28}
-                        color={'#000000'}
-                        style={{opacity: 0.7}}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                </TouchableOpacity>
-              </Modal>
-
-              <View style={styles.searchBarContainer}>
-                <View style={styles.inputContainer}>
-                  <TextInput
-                    placeholder="Search Here..."
-                    style={styles.inputStyle}
-                  />
-                </View>
-                <TouchableOpacity onPress={() => setModalVisible(true)}>
-                  <Ionicons
-                    name="filter"
-                    size={30}
-                    color={'#000000'}
-                    style={{marginRight: '3%'}}
-                  />
-                </TouchableOpacity>
-              </View>
-
               <View style={{marginTop: '5%', marginHorizontal: '5%'}}>
                 <FlatList
                   scrollEnabled={false}
@@ -282,29 +207,50 @@ const AllShop = ({navigation}) => {
                               Verified -{' '}
                               {item?.isVerified === true }
                             </Text> */}
-                            <View style={{flexDirection: 'row', alignItems: 'center', marginLeft: '4%', marginTop: '2%'}}>
-                               <Text style={{fontSize: 15, color: '#000000', fontWeight: '500'}}>Verified</Text>
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                marginLeft: '4%',
+                                marginTop: '2%',
+                              }}>
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  color: '#000000',
+                                  fontWeight: '500',
+                                }}>
+                                Verified
+                              </Text>
                               <TouchableOpacity
                                 activeOpacity={0.8}
                                 style={{
                                   borderWidth: 1,
                                   paddingHorizontal: 5,
                                   borderRadius: 5,
-                                  backgroundColor: item.isVerified === true ? 'green' : 'yellow',
+                                  backgroundColor:
+                                    item.isVerified === true
+                                      ? 'green'
+                                      : 'yellow',
                                   height: 28,
                                   justifyContent: 'center',
                                   alignItems: 'center',
                                   width: 80,
-                                  marginLeft: '5%'
+                                  marginLeft: '5%',
                                 }}>
                                 <Text
                                   style={{
                                     fontSize: 13,
                                     fontWeight: '700',
                                     letterSpacing: 0.5,
-                                    color: item.isVerified == true ? '#FFFFFF' :'#000000',
+                                    color:
+                                      item.isVerified == true
+                                        ? '#FFFFFF'
+                                        : '#000000',
                                   }}>
-                                  {item.isVerified == true ? "Verified" : "Pending"}
+                                  {item.isVerified == true
+                                    ? 'Verified'
+                                    : 'Pending'}
                                 </Text>
                               </TouchableOpacity>
                             </View>

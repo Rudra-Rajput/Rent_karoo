@@ -7,8 +7,17 @@ import Button from '../../components/Button'
 import {useUpdateUserProfileMutation} from '../../redux/services/Profile'
 import {useSelector} from 'react-redux';
 import DocumentPicker from 'react-native-document-picker';
+import Toast from '../../components/Toast'
 
 const Edit = ({navigation, route}) => {
+
+  const [toastVisible, setToastVisible] = useState(false);
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState(false);
+
+  const handleAnimationComplete = () => {
+    setToastVisible(false);
+  };
 
   const {data} = route.params
   const {token} = useSelector(state => state.auth);
@@ -47,15 +56,30 @@ const Edit = ({navigation, route}) => {
     }
     const res = await updateProfile({token, data})
     if (res?.data?.success === true) {
-      alert(res?.data?.message)
-      navigation.navigate('Profile')
+      setError(false)
+      setToastVisible(true);
+      setMessage(res?.data?.message)
+      setTimeout(() => {
+        navigation.navigate('Profile')
+      }, 1000);
+    } else {
+      setError(true)
+      setToastVisible(true);
+      setMessage('Somthing went wrong!')
     }
-    console.log(res, 'response')
   }
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={styles.mainContainer}>
       <StatusBar backgroundColor={'#18241b'} />
+
+      {toastVisible && (
+        <Toast
+          message={message}
+          onAnimationComplete={handleAnimationComplete}
+          backgroundColor={error === true ? 'red' : 'green'}
+        />
+      )}
 
       <Header title={'Edit Profile'} navigation={navigation}/>  
       <View style={styles.profileContainer}>

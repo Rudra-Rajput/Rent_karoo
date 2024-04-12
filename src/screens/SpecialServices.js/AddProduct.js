@@ -19,11 +19,20 @@ import DocumentPicker from 'react-native-document-picker';
 import {useGetALlCategoryQuery, useUploadProductMutation} from '../../redux/services/Profile';
 import Geolocation from '@react-native-community/geolocation';
 import {useSelector} from 'react-redux';
+import Toast from '../../components/Toast';
 
 const AddProduct = ({navigation, route}) => {
 
   const {token} = useSelector(state => state.auth);
   const {shopId} = route.params
+
+  const [toastVisible, setToastVisible] = useState(false);
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState(false);
+
+  const handleAnimationComplete = () => {
+    setToastVisible(false);
+  };
 
   const [inputBoxes, setInputBoxes] = useState([{id: 0, nearby: ''}]);
   const [uploadProduct, {isLoading}] = useUploadProductMutation();
@@ -116,10 +125,16 @@ const AddProduct = ({navigation, route}) => {
     });
     const res = await uploadProduct({token, data})
     if (res?.data?.success === true) {
-      alert(res?.data?.message)
-      navigation.goBack();
+      setError(false)
+      setToastVisible(true);
+      setMessage(res?.data?.message)
+      setTimeout(() => {
+        navigation.goBack();
+      }, 1000);
     } else {
-      alert(res?.error?.data?.error)
+      setError(true)
+      setToastVisible(true);
+      setMessage(res?.error?.data?.error)
     }
 };
 
@@ -129,6 +144,15 @@ const AddProduct = ({navigation, route}) => {
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={styles.mainContainer}>
+       
+       {toastVisible && (
+        <Toast
+          message={message}
+          onAnimationComplete={handleAnimationComplete}
+          backgroundColor={error === true ? 'red' : 'green'}
+        />
+      )}
+
         <Header title={'Upload your product'} navigation={navigation} />
 
         <View style={styles.formContainer}>

@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, TextInput, View, StatusBar, Alert, ActivityIndicator } from 'react-native'
+import { Image, StyleSheet, Text, TextInput, View, StatusBar, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import Header from '../../components/Header'
 import Button from '../../components/Button'
@@ -9,6 +9,7 @@ const Phone = ({navigation}) => {
 
   const [toastVisible, setToastVisible] = useState(false);
   const [message, setMessage] = useState('');
+  const [error, setError] = useState(false);
 
   const handleAnimationComplete = () => {
     setToastVisible(false);
@@ -22,11 +23,16 @@ const Phone = ({navigation}) => {
      const data = {phoneNo}
      const res = await sendOtp(data)
      if (res?.data?.success === true) {
+        setError(false)
         setToastVisible(true);
         setMessage(res?.data?.message)
         setTimeout(() => {
           navigation.navigate('Otp', { res: JSON.stringify(res), phoneNo });
         }, 1000);
+     } else {
+      setError(true)
+      setToastVisible(true);
+      setMessage('Please check phone and try again')
      }
   }
 
@@ -38,7 +44,7 @@ const Phone = ({navigation}) => {
         <Toast
           message={message}
           onAnimationComplete={handleAnimationComplete}
-          backgroundColor={'green'}
+          backgroundColor={error === true ? 'red' : 'green'}
         />
       )}
 

@@ -23,17 +23,64 @@ import {
 } from '../../redux/services/Profile';
 import {useDispatch} from 'react-redux';
 import {setUserToken} from '../../redux/Slices/authSlice';
-import {getToken} from '../../redux/services/LocalStorage';
+import {getLocation, getLocationName, getToken} from '../../redux/services/LocalStorage';
 
 const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
 
 const Home = ({navigation}) => {
+
+  const [dist, setDist] = useState(500000)
+
+  const handleSelectedValue = (selectedValue) => {
+    const numberValue = parseInt(selectedValue, 10);
+    setDist(numberValue)
+  };
+
+  const [locationName, setLocationName] = useState('');
+  const [location, setLocation] = useState('');
+  const [search, setSearch] = useState('');
+
+  let parsedLocation = {};
+  try {
+    parsedLocation = JSON.parse(location);
+   } catch (error) {
+    console.error('Error parsing location data:', error);
+   }
+
+  const lat = parsedLocation.latitude
+  const lng = parsedLocation.longitude
+
+  let locationData = {};
+  try {
+   locationData = JSON.parse(locationName);
+  } catch (error) {
+   console.error('Error parsing location data:', error);
+  }
+  const { streetNumber, locality, subLocality } = locationData;
+
+  useEffect(() => {
+    const fetchLocation = async () => {
+      const location = await getLocation();
+      setLocation(location);
+    };
+    fetchLocation();
+  }, []);
+
+  useEffect(() => {
+    const fetchLocation = async () => {
+      const locationName = await getLocationName();
+      setLocationName(locationName);
+    };
+    fetchLocation();
+  }, []);
+  
+
   const dispatch = useDispatch();
   useEffect(() => {
     (async () => {
       const token = await getToken();
-      dispatch(setUserToken({token: token})); // Store Token in Redux Store
+      dispatch(setUserToken({token: token}));
     })();
   }, []);
 
@@ -42,7 +89,7 @@ const Home = ({navigation}) => {
     data: getAllProduct,
     isLoading,
     refetch,
-  } = useGetAllUserProductsQuery();
+  } = useGetAllUserProductsQuery({lat, lng, dist, search, nearby: search});
 
   const [refreshing, setRefreshing] = useState(false);
   const load = () => {
@@ -75,7 +122,7 @@ const Home = ({navigation}) => {
       const interval = setInterval(() => {
         const nextIndex = (currentIndex + 1) % images.length;
         setCurrentIndex(nextIndex);
-        flatListRef.current.scrollToIndex({index: nextIndex});
+        flatListRef.current?.scrollToIndex({ index: nextIndex, animated: true });
       }, 2000);
 
       return () => clearInterval(interval);
@@ -115,11 +162,11 @@ const Home = ({navigation}) => {
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
-                width: '38%',
-                justifyContent: 'space-between',
+                width: '45%',
+                justifyContent: 'space-around',
               }}>
               <Ionicons name="location-outline" size={24} color={'#000000'} />
-              <Text style={styles.locationText}>Indrapuri c sect...</Text>
+              <Text style={styles.locationText}>{ streetNumber ? `${streetNumber} ${subLocality} ${locality}` : 'Indrapuri c sector'}</Text>
             </TouchableOpacity>
           </View>
 
@@ -129,6 +176,7 @@ const Home = ({navigation}) => {
               <TextInput
                 placeholder="Find Cars, Mobile Phones and More..."
                 style={styles.inputStyle}
+                onChangeText={setSearch}
               />
             </View>
             <TouchableOpacity onPress={() => handleModal()}>
@@ -171,6 +219,7 @@ const Home = ({navigation}) => {
             </View>
           </View>
 
+          
           <View style={{width: WIDTH, marginVertical: 10}}>
             <FlatList
               data={data?.data}
@@ -207,7 +256,7 @@ const Home = ({navigation}) => {
           </View>
 
           {/* TODO: Modal */}
-          <FilterModal visible={isVisible} onClose={handleModal} />
+          <FilterModal visible={isVisible} onClose={handleModal} onSelectedValue={handleSelectedValue}/>
 
           <Text
             style={[styles.categoryText, {marginLeft: '3%', fontSize: 18, textDecorationLine: 'none'}]}>
@@ -265,7 +314,7 @@ const Home = ({navigation}) => {
           {/* TODO: Recommendate Product */}
           <View style={styles.horizontalLine}></View>
 
-          <View style={{marginHorizontal: '2%', marginTop: '3%'}}>
+          {getAllProduct?.data.length === 0 ? null :<View style={{marginHorizontal: '2%', marginTop: '3%'}}>
             <Text
               style={{
                 fontSize: 16,
@@ -275,8 +324,12 @@ const Home = ({navigation}) => {
               }}>
               Fresh recommendations
             </Text>
-          </View>
-
+          </View>}
+          
+          {getAllProduct?.data.length === 0 ?
+          <View style={{justifyContent: 'center', alignItems: 'center', marginTop: '10%'}}>
+             <Text style={styles.noDataText}>No product found</Text>
+          </View> :
           <View style={{flex: 1, alignSelf: 'center'}}>
             <FlatList
               scrollEnabled={false}
@@ -351,7 +404,8 @@ const Home = ({navigation}) => {
                 );
               }}
             />
-          </View>
+          </View>}
+
         </ScrollView>
       )}
     </>
@@ -471,4 +525,10 @@ const styles = StyleSheet.create({
     height: 180,
     resizeMode: 'contain',
   },
+  noDataText: {
+    color: 'red',
+    letterSpacing: 1,
+    fontWeight: '600',
+    fontSize: 16
+  }
 });

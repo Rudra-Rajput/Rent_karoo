@@ -39,15 +39,16 @@ export const profileApi = createApi({
     }),
 
     getAllUserProducts: build.query({
-      query() {
+      query({lat, lng, dist, search, nearby}) {
         return {
-          url: `user/products`,
+          url: `user/products?lat=${lat}&lng=${lng}&dist=${dist}&search=${search}&nearby=${nearby}`,
           method: 'GET',
         }
       },
       providesTags: ["Product"]
     }),
 
+    //2
     getProductByCategoryId: build.query({
       query(id) {
         return {
@@ -70,26 +71,29 @@ export const profileApi = createApi({
       providesTags: ["Product"]
     }),
 
+    //3
     getAllServices: build.query({
-      query() {
+      query({search, dist}) {
         return {
-          url: `user/services`,
+          url: `user/services?search=${search}&dist=${dist}`,
           method: 'GET',
         }
       },
       providesTags: ["Services"]
     }),
 
+    //4
     getAllShop: build.query({
-      query() {
+      query({search, dist}) {
         return {
-          url: `user/shops`,
+          url: `user/shops?search=${search}&dist=${dist}`,
           method: 'GET',
         }
       },
       providesTags: ["Shop"]
     }),
 
+    //5
     getShopProductByShopId: build.query({
       query(shopId) {
         return {
@@ -100,6 +104,7 @@ export const profileApi = createApi({
       providesTags: ["Product"]
     }),
     
+    //6
     getAllMyServices: build.query({
       query(token) {
         return {

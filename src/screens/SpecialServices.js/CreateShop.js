@@ -18,10 +18,19 @@ import {
   import {useCreateSpecialShopMutation} from '../../redux/services/Profile';
   import Geolocation from '@react-native-community/geolocation';
   import {useSelector} from 'react-redux';
+import Toast from '../../components/Toast';
   
   const CreateShop = ({navigation}) => {
   
     const {token} = useSelector(state => state.auth);
+
+    const [toastVisible, setToastVisible] = useState(false);
+    const [message, setMessage] = useState('');
+    const [error, setError] = useState(false);
+  
+    const handleAnimationComplete = () => {
+      setToastVisible(false);
+    };
   
     const [inputBoxes, setInputBoxes] = useState([{id: 0, nearby: ''}]);
     const [createShop, {isLoading}] = useCreateSpecialShopMutation();
@@ -105,10 +114,16 @@ import {
       const res = await createShop({token, data})
       console.log(res, 'shopCreate')
       if (res?.data?.success === true) {
-        alert(res?.data?.message)
-        navigation.goBack()
+        setError(false)
+        setToastVisible(true);
+        setMessage(res?.data?.message)
+        setTimeout(() => {
+          navigation.goBack()
+        }, 1000);
       } else {
-        alert(res?.error?.data?.error)
+        setError(true)
+        setToastVisible(true);
+        setMessage(res?.error?.data?.error)
       }
   };
   
@@ -118,6 +133,15 @@ import {
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={styles.mainContainer}>
+
+      {toastVisible && (
+        <Toast
+          message={message}
+          onAnimationComplete={handleAnimationComplete}
+          backgroundColor={error === true ? 'red' : 'green'}
+        />
+      )}
+
           <Header title={'Create Shop'} navigation={navigation} />
   
           <View style={styles.formContainer}>
