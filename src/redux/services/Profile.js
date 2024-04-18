@@ -5,7 +5,7 @@ export const profileApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: 'https://server.rentkaroo.com/api/',
   }),
-   tagTypes: ["User", "Services", "Product", "Shop"],
+   tagTypes: ["User", "Services", "Product", "Shop", "Enquiry"],
 
   endpoints: build => ({
 
@@ -200,10 +200,22 @@ export const profileApi = createApi({
       invalidatesTags: ["Shop"]
     }),
 
+    genarateEnquiry: build.mutation({
+      query(data) {
+        return {
+          url: `enquiry-create`,
+          method: 'POST',
+          body: data,
+        }
+      },
+      invalidatesTags: ["Enquiry"]
+    }),
+
   }),
 });
 
 export const {
+   useGenarateEnquiryMutation,
     useCreateSpecialShopMutation,
     useGetMyShopQuery,
     useUpdateUserProfileMutation,

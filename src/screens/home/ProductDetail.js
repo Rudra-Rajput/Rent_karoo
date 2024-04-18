@@ -1,14 +1,25 @@
-import { StyleSheet, Text, View, StatusBar, ScrollView, TouchableOpacity, Animated } from 'react-native'
+import { StyleSheet, Text, View, StatusBar, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React from 'react'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Slider from '../../components/Slider'
 import Header from '../../components/Header'
 import Button from '../../components/Button'
+import { useSelector } from 'react-redux'
+import { useGenarateEnquiryMutation } from '../../redux/services/Profile';
 
 const ProductDetail = ({navigation, route}) => {
 
   const data = route.params?.item;
+  const { user } = useSelector(state => state.user);
+
+  const [genarateEnquiry, { isLoading }] = useGenarateEnquiryMutation();
+
+  const handleEnquiry = async () => {
+    const data = {product: data?._id, senderID:user}
+    const res = await genarateEnquiry(data);
+    console.log(res, 'response')
+  }
 
   return (
     <>
@@ -54,7 +65,7 @@ const ProductDetail = ({navigation, route}) => {
     </ScrollView>
 
     <View style={styles.buttonContainer}>
-      <Button onPress={() => navigation.navigate('Enquiry')} title={'Enquiry Now'} backgroundColor={'#196915'}/>
+      <Button disabled={isLoading} onPress={handleEnquiry} title={isLoading ? <ActivityIndicator size={'small'} color={'#FFFFFF'}/> : 'Enquiry Now'} backgroundColor={'#196915'}/>
     </View>
 
     </>

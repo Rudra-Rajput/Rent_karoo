@@ -1,10 +1,35 @@
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Image } from 'react-native';
-import React, {useState, useCallback, useEffect} from 'react';
+import React, {useState, useCallback, useEffect, useMemo} from 'react';
 import {GiftedChat} from 'react-native-gifted-chat';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import io from 'socket.io-client';
 
 const ChatBox = ({navigation}) => {
+
+  const socket = useMemo(() => io("https://server.rentkaroo.com"), []);
   const [messages, setMessages] = useState([]);
+  console.log(messages, 'messages')
+
+  useEffect(() => {
+    socket.on("join", (data) => {
+      console.log(data, 'data');
+      setSocketId(socket.id);
+      setMessages((messages) => [...messages, data?.message]);
+    });    socket.on("newChat", (data) => {
+      console.log(data);
+      setMessages((messages) => [...messages, data]);
+    });    socket.on("chatCreated", (data) => {
+      console.log(data);
+      setMessages((messages) => [...messages, data]);
+    });    socket.on("recvMessage", (data) => {
+      console.log(data);
+      setMessages((messages) => [...messages, data]);
+    });    socket.on("welcome", (s) => {
+      console.log(s);
+    });    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     setMessages([
@@ -15,7 +40,7 @@ const ChatBox = ({navigation}) => {
         user: {
           _id: 2,
           name: 'React Native',
-          avatar: 'https://placeimg.com/140/140/any',
+          avatar: 'https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg',
         },
       },
     ]);

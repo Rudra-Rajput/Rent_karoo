@@ -22,8 +22,9 @@ import {
   useGetAllUserProductsQuery,
 } from '../../redux/services/Profile';
 import {useDispatch} from 'react-redux';
-import {setUserToken} from '../../redux/Slices/authSlice';
-import {getLocation, getLocationName, getToken} from '../../redux/services/LocalStorage';
+import { setUserToken } from '../../redux/Slices/authSlice';
+import {getLocation, getLocationName, getToken, getUser} from '../../redux/services/LocalStorage';
+import { setUser } from '../../redux/Slices/userSlice';
 
 const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
@@ -80,7 +81,9 @@ const Home = ({navigation}) => {
   useEffect(() => {
     (async () => {
       const token = await getToken();
+      const user = await getUser();
       dispatch(setUserToken({token: token}));
+      dispatch(setUser({user: user}));
     })();
   }, []);
 

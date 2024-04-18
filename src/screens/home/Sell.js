@@ -19,6 +19,7 @@ import {useGetMyAllProductQuery} from '../../redux/services/Profile';
 const Sell = ({navigation}) => {
 
   const {token} = useSelector(state => state.auth);
+  
   const {data, isLoading} = useGetMyAllProductQuery(token);
   console.log(data, 'data')
 
