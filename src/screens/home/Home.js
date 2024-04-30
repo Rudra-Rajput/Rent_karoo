@@ -42,23 +42,23 @@ const Home = ({navigation}) => {
   const [location, setLocation] = useState('');
   const [search, setSearch] = useState('');
 
-  let parsedLocation = {};
-  try {
-    parsedLocation = JSON.parse(location);
-   } catch (error) {
-    console.error('Error parsing location data:', error);
-   }
+  // let parsedLocation = {};
+  // try {
+  //   parsedLocation = JSON.parse(location);
+  //  } catch (error) {
+  //   console.error('Error parsing location data:', error);
+  //  }
 
-  const lat = parsedLocation.latitude
-  const lng = parsedLocation.longitude
+  // const lat = parsedLocation.latitude
+  // const lng = parsedLocation.longitude
 
-  let locationData = {};
-  try {
-   locationData = JSON.parse(locationName);
-  } catch (error) {
-   console.error('Error parsing location data:', error);
-  }
-  const { streetNumber, locality, subLocality } = locationData;
+  // let locationData = {};
+  // try {
+  //  locationData = JSON.parse(locationName);
+  // } catch (error) {
+  //  console.error('Error parsing location data:', error);
+  // }
+  // const { streetNumber, locality, subLocality } = locationData;
 
   useEffect(() => {
     const fetchLocation = async () => {
@@ -92,7 +92,7 @@ const Home = ({navigation}) => {
     data: getAllProduct,
     isLoading,
     refetch,
-  } = useGetAllUserProductsQuery({lat, lng, dist, search, nearby: search});
+  } = useGetAllUserProductsQuery({dist, search, nearby: search});
 
   const [refreshing, setRefreshing] = useState(false);
   const load = () => {
@@ -169,7 +169,7 @@ const Home = ({navigation}) => {
                 justifyContent: 'space-around',
               }}>
               <Ionicons name="location-outline" size={24} color={'#000000'} />
-              <Text style={styles.locationText}>{ streetNumber ? `${streetNumber} ${subLocality} ${locality}` : 'Indrapuri c sector'}</Text>
+              <Text style={styles.locationText}>{'Indrapuri c sector'}</Text>
             </TouchableOpacity>
           </View>
 
@@ -325,7 +325,7 @@ const Home = ({navigation}) => {
                 color: '#000000',
                 letterSpacing: 1,
               }}>
-              Fresh recommendations
+              {getAllProduct?.data ? 'Fresh recommendations' : null}
             </Text>
           </View>}
           
@@ -393,7 +393,7 @@ const Home = ({navigation}) => {
                       </View>
                     </View>
 
-                    <TouchableOpacity
+                    {/* <TouchableOpacity
                       activeOpacity={0.7}
                       style={styles.iconContainer}>
                       <AntDesign
@@ -402,7 +402,8 @@ const Home = ({navigation}) => {
                         color={'#000000'}
                         style={{opacity: 0.9}}
                       />
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
+                    
                   </TouchableOpacity>
                 );
               }}

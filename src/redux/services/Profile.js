@@ -39,9 +39,9 @@ export const profileApi = createApi({
     }),
 
     getAllUserProducts: build.query({
-      query({lat, lng, dist, search, nearby}) {
+      query({dist, search, nearby}) {
         return {
-          url: `user/products?lat=${lat}&lng=${lng}&dist=${dist}&search=${search}&nearby=${nearby}`,
+          url: `user/products?dist=${dist}&search=${search}&nearby=${nearby}`,
           method: 'GET',
         }
       },

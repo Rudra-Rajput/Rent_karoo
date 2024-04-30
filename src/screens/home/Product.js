@@ -23,7 +23,7 @@ const Product = ({navigation, route}) => {
     </View>
     :
       <>
-    { data?.data?.length === undefined ? 
+    { data?.data?.length === 0 ? 
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
        <Image source={require('../../assets/notfound.png')} style={{width: 280, height: 280}}/>
     </View> :
@@ -48,9 +48,9 @@ const Product = ({navigation, route}) => {
                 </Text>
               </View>
             </View>
-            <TouchableOpacity activeOpacity={0.7} style={styles.iconContainer}>
+            {/* <TouchableOpacity activeOpacity={0.7} style={styles.iconContainer}>
                <AntDesign name='hearto' size={15} color={'#000000'} style={{opacity: 0.9}}/>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </TouchableOpacity>
         )
        }}/>

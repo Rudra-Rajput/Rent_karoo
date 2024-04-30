@@ -6,18 +6,18 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../../components/Header';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import {Dropdown} from 'react-native-element-dropdown';
 import {TextInput} from 'react-native-paper';
 import Button from '../../components/Button';
 import Geolocation from '@react-native-community/geolocation';
-import Geocoder from 'react-native-geocoder-reborn';
-import {
-  storeLocation,
-  storeLocationName,
-} from '../../redux/services/LocalStorage';
+// import Geocoder from 'react-native-geocoder-reborn';
+// import {
+//   storeLocation,
+//   storeLocationName,
+// } from '../../redux/services/LocalStorage';
 
 const Location = ({navigation}) => {
   const [hide, setHide] = useState(false);
@@ -29,34 +29,35 @@ const Location = ({navigation}) => {
   const [coords, setCoords] = useState('')
   const lat = coords.latitude
   const lng = coords.longitude
+  console.log(lat, lng, 'location')
 
-  const getLocationName = async () => {
-    try {
-      const res = await Geocoder.geocodePosition({lat: lat, lng: lng});
-      if (res && res.length > 0) {
-        const locationData = {
-          streetName: res[0].streetName,
-          streetNumber: res[0].streetNumber,
-          locality: res[0].locality,
-          subLocality: res[0].subLocality,
-          formattedAddress: res[0].formattedAddress,
-        };
-        storeLocationName(JSON.stringify(locationData));
-        navigation.navigate('Main');
-        return res[0].formattedAddress;
-      }
-      return 'Could not get location name';
-    } catch (error) {
-      console.log(error);
-      return 'Could not get location name';
-    }
-  };
+  // const getLocationName = async () => {
+  //   try {
+  //     const res = await Geocoder.geocodePosition({lat: lat, lng: lng});
+  //     if (res && res.length > 0) {
+  //       const locationData = {
+  //         streetName: res[0].streetName,
+  //         streetNumber: res[0].streetNumber,
+  //         locality: res[0].locality,
+  //         subLocality: res[0].subLocality,
+  //         formattedAddress: res[0].formattedAddress,
+  //       };
+  //       storeLocationName(JSON.stringify(locationData));
+  //       navigation.navigate('Main');
+  //       return res[0].formattedAddress;
+  //     }
+  //     return 'Could not get location name';
+  //   } catch (error) {
+  //     console.log(error);
+  //     return 'Could not get location name';
+  //   }
+  // };
 
   const handleLocation = () => {
     Geolocation.getCurrentPosition(
       position => {
         setCoords(position.coords)
-        storeLocation(JSON.stringify(position.coords));
+        // storeLocation(JSON.stringify(position.coords));
       },
       error => {
         console.error(error);
@@ -67,6 +68,10 @@ const Location = ({navigation}) => {
       },
     );
   };
+
+  useEffect(() => {
+    handleLocation();
+  }, [])
 
   const stateData = [
     {label: 'Madhya Pradesh', value: 'Madhya Pradesh'},
@@ -95,10 +100,7 @@ const Location = ({navigation}) => {
       <Header title={'Location'} navigation={navigation} />
 
       <TouchableOpacity
-        onPress={() => {
-          handleLocation();
-          getLocationName();
-        }}
+        onPress={() => navigation.navigate('Map', {lat, lng})}
         activeOpacity={0.7}
         style={styles.locationButtonContainer}>
         <FontAwesome6

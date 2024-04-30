@@ -102,7 +102,7 @@ const Sell = ({navigation}) => {
                     </Text>
                   </View>
                 </View>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   activeOpacity={0.7}
                   style={styles.iconContainer}>
                   <AntDesign
@@ -111,7 +111,7 @@ const Sell = ({navigation}) => {
                     color={'#000000'}
                     style={{opacity: 0.9}}
                   />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </TouchableOpacity>
             );
           }}
