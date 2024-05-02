@@ -29,7 +29,7 @@ const Location = ({navigation}) => {
   const [coords, setCoords] = useState('')
   const lat = coords.latitude
   const lng = coords.longitude
-  console.log(lat, lng, 'location')
+  // console.log(lat, lng, 'location')
 
   // const getLocationName = async () => {
   //   try {

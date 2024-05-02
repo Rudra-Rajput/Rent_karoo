@@ -3,11 +3,20 @@ import { StyleSheet, View, Text } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
-const MapScreen = ({route}) => {
+const MapScreen = ({navigation, route}) => {
 
     const { lat, lng } = route.params;
 
+    const handleMapPress = (event) => {
+      setSelectedLocation({
+        latitude: event.nativeEvent.coordinate.latitude,
+        longitude: event.nativeEvent.coordinate.longitude,
+      });
+      navigation.navigate('Main')
+    };
+
   const [selectedLocation, setSelectedLocation] = useState(null);
+  console.log(selectedLocation, 'selectedLocation')
 
   const handleLocationSelect = (place) => {
     setSelectedLocation({
@@ -22,6 +31,7 @@ const MapScreen = ({route}) => {
     <View style={styles.container}>
       <MapView
         style={styles.map}
+        onPress={handleMapPress}
         initialRegion={{
           latitude: selectedLocation ? selectedLocation.latitude : lat,
           longitude: selectedLocation ? selectedLocation.longitude : lng,
@@ -46,7 +56,7 @@ const MapScreen = ({route}) => {
           handleLocationSelect(details);
         }}
         query={{
-        //   key: 'YOUR_GOOGLE_MAPS_API_KEY',
+          key: 'AIzaSyBF0k5AKWUMa-MbmKp-WcSB1Nde3IUMHEI',
           language: 'en',
         }}
         fetchDetails
